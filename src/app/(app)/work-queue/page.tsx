@@ -23,9 +23,7 @@ export default async function WorkQueuePage() {
     .in("status", ["not_started", "in_progress", "blocked"])
     .order("stage_templates(sort_order)");
 
-  // Group by trade
   const byTrade: Record<string, typeof openStages> = {};
-  // Group by subcontractor
   const bySub: Record<string, typeof openStages> = {};
 
   openStages?.forEach((stage) => {
@@ -60,8 +58,9 @@ export default async function WorkQueuePage() {
                     </span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0 sm:p-6 sm:pt-0">
                   <StageTable stages={stages ?? []} />
+                  <StageCards stages={stages ?? []} />
                 </CardContent>
               </Card>
             ))}
@@ -82,8 +81,9 @@ export default async function WorkQueuePage() {
                     </span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0 sm:p-6 sm:pt-0">
                   <StageTable stages={stages ?? []} />
+                  <StageCards stages={stages ?? []} />
                 </CardContent>
               </Card>
             ))}
@@ -99,43 +99,83 @@ export default async function WorkQueuePage() {
 
 function StageTable({ stages }: { stages: Array<Record<string, unknown>> }) {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Stage</TableHead>
-          <TableHead>Building</TableHead>
-          <TableHead>Unit</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Subcontractor</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {stages.map((stage) => {
-          const template = stage.stage_templates as { name: string; sort_order: number };
-          const unit = stage.units as { id: string; unit_number: string; buildings: { name: string } };
-          const sub = stage.subcontractors as { name: string; company: string | null } | null;
-          return (
-            <TableRow key={stage.id as string}>
-              <TableCell className="font-medium">
-                {template.sort_order}. {template.name}
-              </TableCell>
-              <TableCell>{unit.buildings.name}</TableCell>
-              <TableCell>
-                <Link
-                  href={`/units/${unit.id}`}
-                  className="text-blue-600 hover:underline"
-                >
-                  Unit {unit.unit_number}
-                </Link>
-              </TableCell>
-              <TableCell>
-                <StatusBadge status={stage.status as string} />
-              </TableCell>
-              <TableCell>{sub ? sub.name : "Unassigned"}</TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+    <div className="hidden sm:block">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Stage</TableHead>
+            <TableHead>Building</TableHead>
+            <TableHead>Unit</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Subcontractor</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {stages.map((stage) => {
+            const template = stage.stage_templates as { name: string; sort_order: number };
+            const unit = stage.units as { id: string; unit_number: string; buildings: { name: string } };
+            const sub = stage.subcontractors as { name: string; company: string | null } | null;
+            return (
+              <TableRow key={stage.id as string}>
+                <TableCell className="font-medium">
+                  {template.sort_order}. {template.name}
+                </TableCell>
+                <TableCell>{unit.buildings.name}</TableCell>
+                <TableCell>
+                  <Link
+                    href={`/units/${unit.id}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    Unit {unit.unit_number}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <StatusBadge status={stage.status as string} />
+                </TableCell>
+                <TableCell>{sub ? sub.name : "Unassigned"}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+function StageCards({ stages }: { stages: Array<Record<string, unknown>> }) {
+  return (
+    <div className="divide-y sm:hidden">
+      {stages.map((stage) => {
+        const template = stage.stage_templates as { name: string; sort_order: number };
+        const unit = stage.units as { id: string; unit_number: string; buildings: { name: string } };
+        const sub = stage.subcontractors as { name: string; company: string | null } | null;
+        return (
+          <div key={stage.id as string} className="px-4 py-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="font-medium text-sm">
+                  {template.sort_order}. {template.name}
+                </p>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  {unit.buildings.name}
+                </p>
+              </div>
+              <StatusBadge status={stage.status as string} />
+            </div>
+            <div className="mt-2 flex items-center justify-between text-sm">
+              <Link
+                href={`/units/${unit.id}`}
+                className="text-blue-600 hover:underline"
+              >
+                Unit {unit.unit_number}
+              </Link>
+              <span className="text-gray-500">
+                {sub ? sub.name : "Unassigned"}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }

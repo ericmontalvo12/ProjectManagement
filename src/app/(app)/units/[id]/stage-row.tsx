@@ -30,7 +30,7 @@ export function StageRow({ stage, unitId }: StageRowProps) {
 
   return (
     <TableRow>
-      <TableCell className="font-medium">
+      <TableCell className="whitespace-nowrap font-medium">
         {stage.stage_templates.sort_order}. {stage.stage_templates.name}
       </TableCell>
       <TableCell>
@@ -61,10 +61,10 @@ export function StageRow({ stage, unitId }: StageRowProps) {
       <TableCell className="text-xs text-gray-500">
         {stage.notes || "—"}
       </TableCell>
-      <TableCell className="text-xs text-gray-500">
+      <TableCell className="whitespace-nowrap text-xs text-gray-500">
         {formatDate(stage.started_at)}
       </TableCell>
-      <TableCell className="text-xs text-gray-500">
+      <TableCell className="whitespace-nowrap text-xs text-gray-500">
         {formatDate(stage.completed_at)}
       </TableCell>
     </TableRow>

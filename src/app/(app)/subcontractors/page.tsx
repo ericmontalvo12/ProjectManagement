@@ -26,7 +26,8 @@ export default async function SubcontractorsPage() {
         <p className="text-gray-500">Manage your renovation subcontractors</p>
       </div>
 
-      <Card>
+      {/* Desktop table */}
+      <Card className="hidden sm:block">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
@@ -84,6 +85,57 @@ export default async function SubcontractorsPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Mobile cards */}
+      <div className="space-y-3 sm:hidden">
+        {subs?.map((sub) => (
+          <Card key={sub.id}>
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-medium">{sub.name}</p>
+                  {sub.company && (
+                    <p className="text-sm text-gray-500">{sub.company}</p>
+                  )}
+                </div>
+                <Badge
+                  className={
+                    sub.is_active
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-100 text-gray-500"
+                  }
+                >
+                  {sub.is_active ? "Active" : "Inactive"}
+                </Badge>
+              </div>
+              <div className="mt-2">
+                <Badge variant="secondary">{sub.trade}</Badge>
+              </div>
+              <div className="mt-3 space-y-1 text-sm text-gray-500">
+                {sub.phone && (
+                  <div className="flex items-center gap-1.5">
+                    <Phone className="h-3.5 w-3.5" />
+                    <a href={`tel:${sub.phone}`} className="hover:underline">
+                      {sub.phone}
+                    </a>
+                  </div>
+                )}
+                {sub.email && (
+                  <div className="flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5" />
+                    <a href={`mailto:${sub.email}`} className="hover:underline">
+                      {sub.email}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+        {(!subs || subs.length === 0) && (
+          <p className="text-sm text-gray-500">No subcontractors found.</p>
+        )}
+      </div>
     </div>
   );
 }

@@ -14,6 +14,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StageRow } from "./stage-row";
+import { StageCard } from "./stage-card";
 import { UpdateForm } from "./update-form";
 import { AttachmentList } from "@/components/attachment-list";
 
@@ -83,13 +84,13 @@ export default async function UnitDetailPage({
         >
           <ArrowLeft className="h-4 w-4" /> Back to {building.name}
         </Link>
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold">
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="text-xl font-bold sm:text-2xl">
             {building.name} — Unit {unit.unit_number}
           </h1>
           <StatusBadge status={unit.status} />
         </div>
-        <div className="mt-1 flex items-center gap-4 text-sm text-gray-500">
+        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
           {unit.floor && <span>Floor {unit.floor}</span>}
           <span>
             {unit.bedrooms}bd / {unit.bathrooms}ba
@@ -109,28 +110,37 @@ export default async function UnitDetailPage({
         <CardHeader>
           <CardTitle>Renovation Stages</CardTitle>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Stage</TableHead>
-                <TableHead>Trade</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Update</TableHead>
-                <TableHead>Subcontractor</TableHead>
-                <TableHead>Notes</TableHead>
-                <TableHead>Started</TableHead>
-                <TableHead>Completed</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {stages?.map((stage) => (
-                <StageRow key={stage.id} stage={stage} unitId={id} />
-              ))}
-            </TableBody>
-          </Table>
+        <CardContent className="p-0 sm:p-6 sm:pt-0">
+          {/* Desktop table */}
+          <div className="hidden sm:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Stage</TableHead>
+                  <TableHead>Trade</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Update</TableHead>
+                  <TableHead>Subcontractor</TableHead>
+                  <TableHead>Notes</TableHead>
+                  <TableHead>Started</TableHead>
+                  <TableHead>Completed</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {stages?.map((stage) => (
+                  <StageRow key={stage.id} stage={stage} unitId={id} />
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          {/* Mobile cards */}
+          <div className="divide-y sm:hidden">
+            {stages?.map((stage) => (
+              <StageCard key={stage.id} stage={stage} unitId={id} />
+            ))}
+          </div>
           {(!stages || stages.length === 0) && (
-            <p className="py-4 text-sm text-gray-500">No stages configured.</p>
+            <p className="px-4 py-4 text-sm text-gray-500">No stages configured.</p>
           )}
         </CardContent>
       </Card>

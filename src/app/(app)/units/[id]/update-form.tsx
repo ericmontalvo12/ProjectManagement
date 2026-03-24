@@ -122,8 +122,8 @@ export function UpdateForm({
         </div>
       )}
 
-      <div className="flex items-center gap-3">
-        <Select name="unit_stage_id" className="max-w-xs">
+      <div className="flex flex-wrap items-center gap-2">
+        <Select name="unit_stage_id" className="w-full sm:max-w-xs">
           <option value="">Link to stage (optional)</option>
           {stages.map((s) => (
             <option key={s.id} value={s.id}>
@@ -140,26 +140,28 @@ export function UpdateForm({
           className="hidden"
           onChange={handleFileChange}
         />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <Paperclip className="mr-1 h-4 w-4" />
-          Attach
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Paperclip className="mr-1 h-4 w-4" />
+            Attach
+          </Button>
 
-        <Button type="submit" disabled={submitting}>
-          {submitting ? (
-            <>
-              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-              Uploading...
-            </>
-          ) : (
-            "Add Update"
-          )}
-        </Button>
+          <Button type="submit" disabled={submitting}>
+            {submitting ? (
+              <>
+                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              "Add Update"
+            )}
+          </Button>
+        </div>
       </div>
     </form>
   );

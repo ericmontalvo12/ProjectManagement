@@ -37,8 +37,8 @@ export default async function UpdatesPage() {
 
               return (
                 <div key={update.id} className="border-b pb-4 last:border-0">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-wrap items-center gap-2">
                       {unit && (
                         <Link
                           href={`/units/${unit.id}`}

@@ -53,7 +53,7 @@ export default async function BuildingDetailPage({
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold">{totalUnits}</p>
@@ -82,7 +82,7 @@ export default async function BuildingDetailPage({
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>Units</CardTitle>
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <span>{pct}% complete</span>
@@ -102,9 +102,9 @@ export default async function BuildingDetailPage({
                 <Link
                   key={unit.id}
                   href={`/units/${unit.id}`}
-                  className="flex items-center justify-between py-3 hover:bg-gray-50 px-2 -mx-2 rounded transition-colors"
+                  className="flex flex-col gap-2 py-3 hover:bg-gray-50 px-2 -mx-2 rounded transition-colors sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <div>
                       <span className="font-medium">Unit {unit.unit_number}</span>
                       {unit.floor && (
@@ -115,7 +115,7 @@ export default async function BuildingDetailPage({
                     </div>
                     <StatusBadge status={unit.status} />
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
                     <span>
                       {unit.bedrooms}bd / {unit.bathrooms}ba
                       {unit.sqft && ` / ${unit.sqft} sqft`}

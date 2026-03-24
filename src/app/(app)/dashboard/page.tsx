@@ -122,7 +122,7 @@ export default async function DashboardPage() {
                   const buildingData = unitData?.buildings as Record<string, unknown> | null;
                   return (
                     <div key={update.id} className="border-b pb-3 last:border-0">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                         <Link
                           href={`/units/${update.unit_id}`}
                           className="text-sm font-medium hover:underline"
