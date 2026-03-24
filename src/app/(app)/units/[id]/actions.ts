@@ -16,12 +16,38 @@ export async function addDailyUpdate(formData: FormData) {
 
   if (!user) throw new Error("Not authenticated");
 
-  await supabase.from("daily_updates").insert({
-    unit_id: unitId,
-    notes,
-    unit_stage_id: unitStageId || null,
-    author_id: user.id,
-  });
+  const { data } = await supabase
+    .from("daily_updates")
+    .insert({
+      unit_id: unitId,
+      notes,
+      unit_stage_id: unitStageId || null,
+      author_id: user.id,
+    })
+    .select("id")
+    .single();
+
+  revalidatePath(`/units/${unitId}`);
+  return data?.id ?? null;
+}
+
+export async function addAttachments(
+  dailyUpdateId: string,
+  unitId: string,
+  files: { file_url: string; file_name: string; file_type: string }[]
+) {
+  const supabase = await createClient();
+
+  if (files.length === 0) return;
+
+  await supabase.from("attachments").insert(
+    files.map((f) => ({
+      daily_update_id: dailyUpdateId,
+      file_url: f.file_url,
+      file_name: f.file_name,
+      file_type: f.file_type,
+    }))
+  );
 
   revalidatePath(`/units/${unitId}`);
 }

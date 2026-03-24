@@ -15,6 +15,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StageRow } from "./stage-row";
 import { UpdateForm } from "./update-form";
+import { AttachmentList } from "@/components/attachment-list";
 
 export default async function UnitDetailPage({
   params,
@@ -32,18 +33,41 @@ export default async function UnitDetailPage({
 
   if (!unit) notFound();
 
-  const [{ data: stages }, { data: updates }] = await Promise.all([
-    supabase
-      .from("unit_stages")
-      .select("*, stage_templates(*), subcontractors(name, company)")
-      .eq("unit_id", id)
-      .order("stage_templates(sort_order)"),
-    supabase
-      .from("daily_updates")
-      .select("*, unit_stages(stage_templates(name))")
-      .eq("unit_id", id)
-      .order("created_at", { ascending: false }),
-  ]);
+  const [{ data: stages }, { data: updates }, { data: attachments }] =
+    await Promise.all([
+      supabase
+        .from("unit_stages")
+        .select("*, stage_templates(*), subcontractors(name, company)")
+        .eq("unit_id", id)
+        .order("stage_templates(sort_order)"),
+      supabase
+        .from("daily_updates")
+        .select("*, unit_stages(stage_templates(name))")
+        .eq("unit_id", id)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("attachments")
+        .select("*")
+        .in(
+          "daily_update_id",
+          (
+            await supabase
+              .from("daily_updates")
+              .select("id")
+              .eq("unit_id", id)
+          ).data?.map((d) => d.id) ?? []
+        ),
+    ]);
+
+  const attachmentsByUpdate = (attachments ?? []).reduce(
+    (acc, att) => {
+      const key = att.daily_update_id as string;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(att);
+      return acc;
+    },
+    {} as Record<string, typeof attachments>
+  );
 
   const building = unit.buildings as { id: string; name: string };
   const stagesCompleted = stages?.filter((s) => s.status === "completed").length ?? 0;
@@ -142,6 +166,11 @@ export default async function UnitDetailPage({
                     )}
                   </div>
                   <p className="mt-1 text-sm text-gray-700">{update.notes}</p>
+                  {attachmentsByUpdate[update.id] && (
+                    <AttachmentList
+                      attachments={attachmentsByUpdate[update.id]}
+                    />
+                  )}
                 </div>
               );
             })}

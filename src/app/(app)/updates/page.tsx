@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateTime } from "@/lib/utils";
 import Link from "next/link";
+import { AttachmentList } from "@/components/attachment-list";
 
 export default async function UpdatesPage() {
   const supabase = await createClient();
@@ -9,7 +10,7 @@ export default async function UpdatesPage() {
   const { data: updates } = await supabase
     .from("daily_updates")
     .select(
-      "*, units(id, unit_number, buildings(name)), unit_stages(stage_templates(name))"
+      "*, units(id, unit_number, buildings(name)), unit_stages(stage_templates(name)), attachments(*)"
     )
     .order("created_at", { ascending: false })
     .limit(100);
@@ -57,6 +58,11 @@ export default async function UpdatesPage() {
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-gray-700">{update.notes}</p>
+                  {update.attachments && (update.attachments as { id: string; file_url: string; file_name: string; file_type: string | null }[]).length > 0 && (
+                    <AttachmentList
+                      attachments={update.attachments as { id: string; file_url: string; file_name: string; file_type: string | null }[]}
+                    />
+                  )}
                 </div>
               );
             })}
