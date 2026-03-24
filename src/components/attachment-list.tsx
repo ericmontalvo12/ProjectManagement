@@ -1,6 +1,6 @@
 "use client";
 
-import { Paperclip, FileText, Download } from "lucide-react";
+import { Paperclip, FileText, Download, X } from "lucide-react";
 import { useState } from "react";
 
 interface AttachmentItem {
@@ -17,7 +17,7 @@ export function AttachmentList({ attachments }: { attachments: AttachmentItem[] 
   const docs = attachments.filter((a) => !a.file_type?.startsWith("image/"));
 
   return (
-    <div className="mt-2 space-y-2">
+    <div className="mt-3 space-y-2">
       {images.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {images.map((img) => (
@@ -54,34 +54,44 @@ function ImageThumb({ attachment }: { attachment: AttachmentItem }) {
       <button
         type="button"
         onClick={() => setExpanded(true)}
-        className="overflow-hidden rounded border"
+        className="min-h-[80px] min-w-[80px] overflow-hidden rounded-lg border bg-gray-100 sm:min-h-[96px] sm:min-w-[96px]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={attachment.file_url}
           alt={attachment.file_name}
-          className="h-16 w-16 object-cover transition-transform hover:scale-105"
+          className="h-20 w-20 object-cover transition-transform hover:scale-105 sm:h-24 sm:w-24"
         />
       </button>
 
       {expanded && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-8"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 sm:p-8"
           onClick={() => setExpanded(false)}
         >
-          <div className="relative max-h-[80vh] max-w-[80vw]">
+          <div className="relative max-h-[90vh] max-w-[92vw] sm:max-h-[80vh] sm:max-w-[80vw]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={attachment.file_url}
               alt={attachment.file_name}
-              className="max-h-[80vh] max-w-[80vw] rounded-lg object-contain"
+              className="max-h-[90vh] max-w-[92vw] rounded-lg object-contain sm:max-h-[80vh] sm:max-w-[80vw]"
             />
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded(false);
+              }}
+              className="absolute -right-2 -top-2 rounded-full bg-white p-1.5 shadow-md sm:right-2 sm:top-2"
+            >
+              <X className="h-4 w-4" />
+            </button>
             <a
               href={attachment.file_url}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="absolute right-2 top-2 rounded-full bg-white/80 p-1.5 text-gray-700 hover:bg-white"
+              className="absolute bottom-2 right-2 rounded-full bg-white/90 p-2 text-gray-700 shadow-md hover:bg-white"
             >
               <Download className="h-4 w-4" />
             </a>
